@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enugu State School Board Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-bg {
+            background: linear-gradient(rgba(0, 70, 30, 0.7), rgba(0, 70, 30, 0.7)), url('https://placehold.co/1600x900/e2e8f0/667eea?text=School+Campus');
+            background-size: cover;
+            background-position: center;
+        }
+        .page {
+            display: none; /* All pages are hidden by default */
+        }
+        .page.active {
+            display: block; /* The active page is shown */
+        }
+        #calendar-grid .day:hover {
+            background-color: #e2e8f0;
+            cursor: pointer;
+        }
+        #calendar-grid .event-day {
+            background-color: #c6f6d5;
+            font-weight: bold;
+        }
+        .stat-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* Style for admin section for clear differentiation */
+        .admin-page {
+            background-color: #f7fafc; /* A slightly different background for admin pages */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" data-page="home" class="nav-link text-2xl font-bold text-green-800">Enugu School Board</a>
+            <!-- Logged Out Navigation -->
+            <div id="nav-logged-out" class="hidden md:flex items-center space-x-6">
+                <a href="#" data-page="home" class="nav-link text-gray-600 font-medium">Home</a>
+                <a href="#" data-page="announcements" class="nav-link text-gray-600 font-medium">Announcements</a>
+                <a href="#" data-page="events" class="nav-link text-gray-600 font-medium">Events</a>
+                <a href="#" data-page="login" class="bg-green-700 text-white py-2 px-4 rounded-full hover:bg-green-800 transition duration-300">Login / Register</a>
+            </div>
+            <!-- Logged In Navigation -->
+            <div id="nav-logged-in" class="hidden md:flex items-center space-x-6">
+                <a href="#" data-page="dashboard" class="nav-link text-gray-600 font-medium">Dashboard</a>
+                <a href="#" data-page="timetable" class="nav-link text-gray-600 font-medium">Timetable</a>
+                <a href="#" data-page="results" class="nav-link text-gray-600 font-medium">Results</a>
+                <div class="relative">
+                    <button id="profile-menu-button" class="flex items-center space-x-2">
+                        <img src="https://placehold.co/40x40/4a5568/ffffff?text=U" class="w-8 h-8 rounded-full">
+                        <span class="font-medium text-gray-700">User</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                        <a href="#" data-page="profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                        <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Admin Navigation -->
+            <div id="nav-admin" class="hidden md:flex items-center space-x-6">
+                <a href="#" data-page="admin-dashboard" class="nav-link text-gray-600 font-medium">Admin Dashboard</a>
+                <div class="relative">
+                    <button id="admin-profile-menu-button" class="flex items-center space-x-2">
+                        <img src="https://placehold.co/40x40/a0aec0/ffffff?text=A" class="w-8 h-8 rounded-full">
+                        <span class="font-medium text-gray-700">Admin</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="admin-profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                        <a href="#" data-page="admin-profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                        <a href="#" id="admin-logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <i class="fas fa-bars fa-lg"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <!-- Mobile menu content will be dynamically generated by JS -->
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- ... existing public pages from home to profile ... -->
+        
+        <!-- Home Page (Landing Page) -->
+        <section id="home" class="page active">
+            <!-- Hero Section -->
+            <div class="hero-bg text-white py-24 md:py-32">
+                <div class="container mx-auto px-6 text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Excellence in Education for Every Child</h1>
+                    <p class="text-lg md:text-xl max-w-3xl mx-auto">Welcome to the official portal for Enugu State schools. Access announcements, events, results, and more.</p>
+                </div>
+            </div>
+
+            <!-- Welcome Message Section -->
+            <div class="py-20 bg-white">
+                <div class="container mx-auto px-6 md:flex items-center gap-12">
+                    <div class="md:w-1/3 text-center mb-8 md:mb-0">
+                        <img src="https://placehold.co/200x200/4a5568/ffffff?text=Chairperson" alt="Board Chairperson" class="w-48 h-48 rounded-full mx-auto mb-4 border-4 border-green-200">
+                        <h3 class="text-2xl font-bold text-gray-800">Dr. Nkechi Okafor</h3>
+                        <p class="text-green-700 font-semibold">Board Chairperson</p>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h2 class="text-3xl font-bold text-green-800 mb-4">A Message from the Board</h2>
+                        <p class="text-gray-600 mb-4 leading-relaxed">
+                            "On behalf of the Enugu State School Board, I welcome you to our digital home. We are steadfast in our commitment to fostering an educational ecosystem where every student is inspired to learn, grow, and excel. This portal is a vital tool in our mission, designed to enhance communication and provide easy access to important resources for our students, parents, and staff. Together, let us continue to build a brighter future for the children of Enugu State."
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Key Focus Areas -->
+            <div class="py-20 bg-gray-50">
+                <div class="container mx-auto px-6 text-center">
+                    <h2 class="text-3xl font-bold text-green-800 mb-12">Our Core Priorities</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="bg-white p-8 rounded-lg shadow-md">
+                            <i class="fas fa-book-open fa-3x text-green-600 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Academic Excellence</h3>
+                            <p class="text-gray-600">Implementing modern curricula and teaching methods to ensure top-tier education.</p>
+                        </div>
+                        <div class="bg-white p-8 rounded-lg shadow-md">
+                            <i class="fas fa-laptop-code fa-3x text-green-600 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Digital Integration</h3>
+                            <p class="text-gray-600">Equipping our schools with the technology needed for 21st-century learning.</p>
+                        </div>
+                        <div class="bg-white p-8 rounded-lg shadow-md">
+                            <i class="fas fa-users fa-3x text-green-600 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Teacher Development</h3>
+                            <p class="text-gray-600">Investing in continuous training and support for our dedicated educators.</p>
+                        </div>
+                        <div class="bg-white p-8 rounded-lg shadow-md">
+                            <i class="fas fa-shield-alt fa-3x text-green-600 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Student Welfare</h3>
+                            <p class="text-gray-600">Creating a safe, inclusive, and supportive environment for all students.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="py-20 bg-green-700 text-white">
+                <div class="container mx-auto px-6 text-center">
+                    <h2 class="text-3xl font-bold mb-12">Our District at a Glance</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-green-800 p-8 rounded-lg stat-card">
+                            <p class="text-5xl font-bold">150+</p>
+                            <p class="text-lg mt-2">Schools</p>
+                        </div>
+                        <div class="bg-green-800 p-8 rounded-lg stat-card">
+                            <p class="text-5xl font-bold">45,000+</p>
+                            <p class="text-lg mt-2">Students</p>
+                        </div>
+                        <div class="bg-green-800 p-8 rounded-lg stat-card">
+                            <p class="text-5xl font-bold">2,000+</p>
+                            <p class="text-lg mt-2">Dedicated Staff</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login/Register Page -->
+        <section id="login" class="page">
+            <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-lg">
+                    <div>
+                        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+                    </div>
+                    <form id="login-form" class="mt-8 space-y-6" action="#" method="POST">
+                        <div class="rounded-md shadow-sm -space-y-px">
+                            <div><input id="email-address" name="email" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="Email address"></div>
+                            <div><input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="Password"></div>
+                        </div>
+                        <div><button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">Sign in</button></div>
+                        <p class="text-center text-sm">Don't have an account? <a href="#" data-page="register" class="font-medium text-green-600 hover:text-green-500">Register here</a></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Registration Page -->
+        <section id="register" class="page">
+            <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+                 <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-lg">
+                    <div><h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Create a new account</h2></div>
+                    <form class="mt-8 space-y-6" action="#" method="POST">
+                        <input type="text" placeholder="Full Name" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        <input type="email" placeholder="Email Address" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        <input type="password" placeholder="Password" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        <input type="password" placeholder="Confirm Password" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        <div><button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">Register</button></div>
+                        <p class="text-center text-sm">Already have an account? <a href="#" data-page="login" class="font-medium text-green-600 hover:text-green-500">Sign in</a></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page">
+            <div class="container mx-auto px-6 py-12">
+                <h1 class="text-3xl font-bold text-gray-900 mb-8">Welcome, Adaeze!</h1>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left Column -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <!-- Quick Stats -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                                <p class="text-3xl font-bold text-green-600">97%</p>
+                                <p class="text-gray-500">Attendance</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                                <p class="text-3xl font-bold text-blue-600">3</p>
+                                <p class="text-gray-500">Assignments Due</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                                <p class="text-3xl font-bold text-yellow-600">A</p>
+                                <p class="text-gray-500">Overall Grade</p>
+                            </div>
+                        </div>
+                        <!-- Recent Grades -->
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h2 class="text-xl font-bold mb-4">Recent Grades</h2>
+                            <ul class="space-y-3">
+                                <li class="flex justify-between items-center"><span>Mathematics Test</span><span class="font-bold p-2 bg-green-100 text-green-800 rounded">85%</span></li>
+                                <li class="flex justify-between items-center"><span>English Essay</span><span class="font-bold p-2 bg-green-100 text-green-800 rounded">92%</span></li>
+                                <li class="flex justify-between items-center"><span>Science Project</span><span class="font-bold p-2 bg-yellow-100 text-yellow-800 rounded">78%</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Right Column -->
+                    <div class="space-y-8">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h2 class="text-xl font-bold mb-4">Quick Links</h2>
+                            <ul class="space-y-2">
+                                <li><a href="#" data-page="timetable" class="text-green-600 hover:underline flex items-center"><i class="fas fa-calendar-alt w-6 mr-2"></i>View Timetable</a></li>
+                                <li><a href="#" data-page="results" class="text-green-600 hover:underline flex items-center"><i class="fas fa-poll w-6 mr-2"></i>Check Results</a></li>
+                                <li><a href="#" data-page="announcements" class="text-green-600 hover:underline flex items-center"><i class="fas fa-bullhorn w-6 mr-2"></i>Announcements</a></li>
+                                <li><a href="#" data-page="profile" class="text-green-600 hover:underline flex items-center"><i class="fas fa-user-circle w-6 mr-2"></i>My Profile</a></li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h2 class="text-xl font-bold mb-4">Upcoming Events</h2>
+                            <p class="text-gray-600">Inter-house sports competition on Nov 22. <a href="#" data-page="events" class="text-sm text-green-600">View details...</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Announcements Page -->
+        <section id="announcements" class="page">
+             <div class="container mx-auto px-6 py-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-10 text-center">School Announcements</h1>
+                <div id="public-announcements-list" class="space-y-8 max-w-4xl mx-auto">
+                    <!-- Featured Announcement -->
+                    <div class="bg-green-100 border-l-4 border-green-500 p-6 rounded-r-lg shadow-lg">
+                        <p class="text-sm text-green-700 font-semibold">FEATURED - October 11, 2025</p>
+                        <h2 class="text-2xl font-bold mt-1 text-green-900">Mid-Term Break and Resumption Dates</h2>
+                        <p class="text-gray-700 mt-2">This is to inform all students, parents, and guardians that the school will observe its mid-term break from Monday, October 27th to Friday, October 31st, 2025. All academic activities will resume on Monday, November 3rd, 2025. We wish everyone a restful break.</p>
+                    </div>
+                    <!-- Regular Announcements -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <p class="text-sm text-gray-500">October 10, 2025</p>
+                        <h2 class="text-xl font-bold mt-1">2025-2026 School Calendar Approved</h2>
+                        <p class="text-gray-600 mt-2">The board has officially approved the academic calendar for the upcoming school year. Key dates include resumption on September 15th and first term exams starting December 1st. You can download the full calendar from the resources section.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <p class="text-sm text-gray-500">October 5, 2025</p>
+                        <h2 class="text-xl font-bold mt-1">New Digital Literacy Initiative Launched</h2>
+                        <p class="text-gray-600 mt-2">We are excited to announce a new program to provide tablets and coding classes to all junior secondary students, starting this term. A detailed schedule for device distribution will be sent to parents via email.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md">
+                        <p class="text-sm text-gray-500">September 30, 2025</p>
+                        <h2 class="text-xl font-bold mt-1">Inter-House Sports Heats Schedule</h2>
+                        <p class="text-gray-600 mt-2">The preliminary heats for the annual inter-house sports competition will take place from November 17th to 20th. All participating students should confirm their events with their house masters.</p>
+                    </div>
+                    <div class="text-center mt-12">
+                        <button class="bg-gray-200 text-gray-700 py-2 px-6 rounded-full hover:bg-gray-300">Load More Announcements</button>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <!-- Events Page (List, Calendar, Archive) -->
+        <section id="events" class="page">
+            <div class="container mx-auto px-6 py-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-10 text-center">School Events Calendar</h1>
+                <!-- Event Calendar -->
+                <div class="bg-white p-6 rounded-lg shadow-md mb-12">
+                    <div class="flex justify-between items-center mb-4">
+                        <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
+                        <h2 id="calendar-month-year" class="text-xl font-bold"></h2>
+                        <button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center font-semibold text-sm text-gray-600 mb-2">
+                        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                    </div>
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-1">
+                        <!-- Calendar days will be generated by JS -->
+                    </div>
+                </div>
+                <!-- Events Details -->
+                <div class="space-y-10">
+                    <div id="public-events-list">
+                        <h2 class="text-3xl font-bold mb-6 border-b-2 border-green-500 pb-2">Upcoming Events</h2>
+                        <div class="space-y-6">
+                            <div class="bg-white p-6 rounded-lg shadow flex items-start space-x-4">
+                                <div class="text-center border-r pr-4">
+                                    <p class="text-3xl font-bold text-green-700">25</p>
+                                    <p class="text-sm text-gray-500">OCT</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold">Monthly Board Meeting</h3>
+                                    <p class="text-gray-600">An open meeting for all stakeholders to discuss school policies and progress. Location: Board Office. Time: 6:00 PM.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow flex items-start space-x-4">
+                                <div class="text-center border-r pr-4">
+                                    <p class="text-3xl font-bold text-green-700">10</p>
+                                    <p class="text-sm text-gray-500">NOV</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold">District-Wide Professional Development Day</h3>
+                                    <p class="text-gray-600">A day of training and workshops for all teaching staff. Note: There will be no classes for students.</p>
+                                </div>
+                            </div>
+                             <div class="bg-white p-6 rounded-lg shadow flex items-start space-x-4">
+                                <div class="text-center border-r pr-4">
+                                    <p class="text-3xl font-bold text-green-700">22</p>
+                                    <p class="text-sm text-gray-500">NOV</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold">Annual Inter-School Sports Competition</h3>
+                                    <p class="text-gray-600">The grand finale of our sporting season! Join us at Nnamdi Azikiwe Stadium from 10:00 AM.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-bold mb-6 border-b-2 border-gray-300 pb-2">Events Archive</h2>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-gray-200 p-4 rounded-lg shadow-inner text-gray-700">
+                                <h3 class="font-bold">September 15: School Resumption Day</h3>
+                                <p class="text-sm">Marked the beginning of the 2025/2026 academic session with an orientation for new students.</p>
+                            </div>
+                            <div class="bg-gray-200 p-4 rounded-lg shadow-inner text-gray-700">
+                                <h3 class="font-bold">September 5: Entrance Exam Results Released</h3>
+                                <p class="text-sm">The results for the common entrance examinations were published online.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timetable Page -->
+        <section id="timetable" class="page">
+            <div class="container mx-auto px-6 py-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4 text-center">Class Timetables</h1>
+                <p class="text-center text-gray-600 mb-8">Select a class to view the weekly schedule.</p>
+                <!-- Timetable Selector -->
+                <div class="text-center mb-8">
+                    <select id="class-selector" class="p-2 border rounded-md shadow-sm">
+                        <option value="jss2">JSS 2</option>
+                        <option value="sss1">SSS 1</option>
+                    </select>
+                </div>
+
+                <!-- JSS 2 Timetable -->
+                <div id="timetable-jss2" class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+                    <h2 class="text-2xl font-bold mb-4">JSS 2 Weekly Timetable</h2>
+                    <table class="w-full text-left border-collapse min-w-[800px]">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 bg-gray-200 border">Time</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Monday</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Tuesday</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Wednesday</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Thursday</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Friday</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="py-2 px-4 border">7:45 - 8:00</td><td class="py-2 px-4 border bg-gray-100 text-center" colspan="5">Assembly</td></tr>
+                            <tr><td class="py-2 px-4 border">8:00 - 8:40</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Agric Science</td></tr>
+                            <tr><td class="py-2 px-4 border">8:40 - 9:20</td><td class="py-2 px-4 border">Basic Science</td><td class="py-2 px-4 border">Social Studies</td><td class="py-2 px-4 border">Basic Science</td><td class="py-2 px-4 border">Social Studies</td><td class="py-2 px-4 border">CRS</td></tr>
+                             <tr><td class="py-2 px-4 border">9:20 - 10:00</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Basic Tech</td><td class="py-2 px-4 border">Business Studies</td></tr>
+                            <tr><td class="py-2 px-4 border font-bold bg-green-100" colspan="6">10:00 - 10:30 SHORT BREAK</td></tr>
+                            <tr><td class="py-2 px-4 border">10:30 - 11:10</td><td class="py-2 px-4 border">Igbo</td><td class="py-2 px-4 border">Computer</td><td class="py-2 px-4 border">Igbo</td><td class="py-2 px-4 border">Computer</td><td class="py-2 px-4 border">PHE</td></tr>
+                             <tr><td class="py-2 px-4 border">11:10 - 11:50</td><td class="py-2 px-4 border">Social Studies</td><td class="py-2 px-4 border">Basic Science</td><td class="py-2 px-4 border">Basic Tech</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">Library</td></tr>
+                             <tr><td class="py-2 px-4 border font-bold bg-green-100" colspan="6">12:00 - 1:00 LONG BREAK</td></tr>
+                             <tr><td class="py-2 px-4 border">1:00 - 1:40</td><td class="py-2 px-4 border">CCA</td><td class="py-2 px-4 border">Agric Science</td><td class="py-2 px-4 border">Home Economics</td><td class="py-2 px-4 border">Business Studies</td><td class="py-2 px-4 border">Club Activities</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                 <!-- SSS 1 Timetable (hidden by default) -->
+                <div id="timetable-sss1" class="bg-white p-6 rounded-lg shadow-md overflow-x-auto hidden">
+                    <h2 class="text-2xl font-bold mb-4">SSS 1 Weekly Timetable</h2>
+                    <table class="w-full text-left border-collapse min-w-[800px]">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 bg-gray-200 border">Time</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Monday</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Tuesday</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Wednesday</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Thursday</th>
+                                <th class="py-2 px-4 bg-gray-200 border">Friday</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             <tr><td class="py-2 px-4 border">8:00 - 8:40</td><td class="py-2 px-4 border">Physics</td><td class="py-2 px-4 border">Chemistry</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Biology</td></tr>
+                            <!-- Add more SSS 1 rows here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Page -->
+        <section id="results" class="page">
+             <div class="container mx-auto px-6 py-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center">Academic Results</h1>
+                <div class="bg-white p-8 rounded-lg shadow-md max-w-4xl mx-auto">
+                    <div class="md:flex justify-between items-center mb-6">
+                        <div>
+                            <p><strong>Student:</strong> Adaeze Okoro</p>
+                            <p><strong>Class:</strong> JSS 2</p>
+                            <p><strong>Student ID:</strong> EN/2024/105</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 text-right">
+                             <select class="p-2 border rounded-md">
+                                <option>First Term 2025</option>
+                                <option>Third Term 2024</option>
+                                <option>Second Term 2024</option>
+                            </select>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 ml-2"><i class="fas fa-print mr-2"></i>Print</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left min-w-[600px]">
+                            <thead><tr class="bg-gray-200"><th class="p-3">Subject</th><th class="p-3">Test (40)</th><th class="p-3">Exam (60)</th><th class="p-3">Total (100)</th><th class="p-3">Grade</th></tr></thead>
+                            <tbody>
+                                <tr><td class="p-3 border-b">Mathematics</td><td class="p-3 border-b">35</td><td class="p-3 border-b">50</td><td class="p-3 border-b">85</td><td class="p-3 border-b font-bold text-green-700">A</td></tr>
+                                <tr><td class="p-3 border-b">English</td><td class="p-3 border-b">30</td><td class="p-3 border-b">48</td><td class="p-3 border-b">78</td><td class="p-3 border-b font-bold text-green-700">B</td></tr>
+                                <tr><td class="p-3 border-b">Basic Science</td><td class="p-3 border-b">38</td><td class="p-3 border-b">54</td><td class="p-3 border-b">92</td><td class="p-3 border-b font-bold text-green-700">A</td></tr>
+                                <tr><td class="p-3 border-b">Social Studies</td><td class="p-3 border-b">28</td><td class="p-3 border-b">45</td><td class="p-3 border-b">73</td><td class="p-3 border-b font-bold text-green-700">B</td></tr>
+                                <tr><td class="p-3 border-b">Computer Science</td><td class="p-3 border-b">36</td><td class="p-3 border-b">51</td><td class="p-3 border-b">87</td><td class="p-3 border-b font-bold text-green-700">A</td></tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-gray-100 font-bold"><td class="p-3" colspan="3">Term Average</td><td class="p-3" colspan="2">83.0%</td></tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                     <div class="mt-8 border-t pt-6">
+                        <h3 class="text-lg font-bold">Teacher's Remarks</h3>
+                        <p class="text-gray-600 italic mt-2">"Adaeze has shown excellent performance this term, especially in sciences. A little more focus on Social Studies will yield even better results. Keep up the great work!"</p>
+                    </div>
+                </div>
+             </div>
+        </section>
+        
+        <!-- Profile Page -->
+        <section id="profile" class="page">
+             <div class="container mx-auto px-6 py-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center">Student Profile</h1>
+                <div class="bg-white p-8 rounded-lg shadow-md max-w-3xl mx-auto">
+                    <div class="text-center mb-8">
+                        <img src="https://placehold.co/120x120/4a5568/ffffff?text=A" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-green-200">
+                        <button class="text-sm text-green-600 hover:underline">Change Photo</button>
+                    </div>
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label class="font-medium text-gray-700">Full Name</label><input type="text" value="Adaeze Okoro" class="w-full mt-1 p-2 border rounded-md bg-gray-100" readonly></div>
+                            <div><label class="font-medium text-gray-700">Student ID</label><input type="text" value="EN/2024/105" class="w-full mt-1 p-2 border rounded-md bg-gray-100" readonly></div>
+                            <div><label class="font-medium text-gray-700">Class</label><input type="text" value="JSS 2" class="w-full mt-1 p-2 border rounded-md bg-gray-100" readonly></div>
+                            <div><label class="font-medium text-gray-700">Date of Birth</label><input type="text" value="15-08-2012" class="w-full mt-1 p-2 border rounded-md bg-gray-100" readonly></div>
+                            <div class="md:col-span-2"><label class="font-medium text-gray-700">Email Address</label><input type="email" value="ada.okoro@example.com" class="w-full mt-1 p-2 border rounded-md bg-gray-50"></div>
+                            <div class="md:col-span-2"><label class="font-medium text-gray-700">Guardian's Name</label><input type="text" value="Mr. & Mrs. Okoro" class="w-full mt-1 p-2 border rounded-md bg-gray-50"></div>
+                            <div><label class="font-medium text-gray-700">Guardian's Phone</label><input type="tel" value="+2348012345678" class="w-full mt-1 p-2 border rounded-md bg-gray-50"></div>
+                        </div>
+                        <div class="border-t mt-8 pt-6 flex justify-between items-center">
+                             <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400">Change Password</button>
+                            <button type="submit" class="bg-green-600 text-white px-8 py-2 rounded-md hover:bg-green-700">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+             </div>
+        </section>
+
+        <!-- ADMIN SECTION -->
+        
+        <!-- Admin Login Page -->
+        <section id="admin-login" class="page">
+            <div class="min-h-screen flex items-center justify-center bg-gray-800 py-12 px-4">
+                 <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-2xl">
+                    <div><h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Administrator Access</h2></div>
+                    <form id="admin-login-form" class="mt-8 space-y-6">
+                        <div><input type="email" placeholder="Admin Email" required class="w-full px-3 py-2 border border-gray-300 rounded-md" value="admin@enuguschools.gov"></div>
+                        <div><input type="password" placeholder="Password" required class="w-full px-3 py-2 border border-gray-300 rounded-md" value="password"></div>
+                        <div><button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">Sign In</button></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard Page -->
+        <section id="admin-dashboard" class="page admin-page">
+            <div class="container mx-auto px-6 py-12">
+                 <h1 class="text-4xl font-bold text-gray-900 mb-10">Admin Dashboard</h1>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <a href="#" data-page="admin-announcements" class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow flex items-center space-x-4">
+                        <i class="fas fa-bullhorn fa-3x text-blue-500"></i>
+                        <div><h2 class="text-2xl font-bold">Manage Announcements</h2><p class="text-gray-600">Create, edit, or delete school news.</p></div>
+                    </a>
+                    <a href="#" data-page="admin-events" class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow flex items-center space-x-4">
+                        <i class="fas fa-calendar-check fa-3x text-green-500"></i>
+                        <div><h2 class="text-2xl font-bold">Manage Events</h2><p class="text-gray-600">Add or update school events.</p></div>
+                    </a>
+                    <a href="#" data-page="admin-timetable" class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow flex items-center space-x-4">
+                        <i class="fas fa-calendar-alt fa-3x text-yellow-500"></i>
+                        <div><h2 class="text-2xl font-bold">Update Timetables</h2><p class="text-gray-600">Modify class schedules.</p></div>
+                    </a>
+                    <a href="#" data-page="admin-results" class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow flex items-center space-x-4">
+                        <i class="fas fa-poll fa-3x text-purple-500"></i>
+                        <div><h2 class="text-2xl font-bold">Update Results</h2><p class="text-gray-600">Input and edit student grades.</p></div>
+                    </a>
+                    <a href="#" data-page="admin-profile" class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow flex items-center space-x-4">
+                        <i class="fas fa-user-cog fa-3x text-red-500"></i>
+                        <div><h2 class="text-2xl font-bold">Admin Profile</h2><p class="text-gray-600">Manage your administrator account.</p></div>
+                    </a>
+                 </div>
+            </div>
+        </section>
+        
+        <!-- Admin Announcements Page -->
+        <section id="admin-announcements" class="page admin-page">
+             <div class="container mx-auto px-6 py-12">
+                 <h1 class="text-4xl font-bold text-gray-900 mb-10">Manage Announcements</h1>
+                 <div class="bg-white p-8 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-6">Create New Announcement</h2>
+                    <form id="create-announcement-form" class="space-y-4">
+                        <input type="text" id="announcement-title" placeholder="Announcement Title" class="w-full p-2 border rounded-md" required>
+                        <textarea id="announcement-content" placeholder="Full announcement content..." class="w-full p-2 border rounded-md" rows="4" required></textarea>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="announcement-featured" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            <label for="announcement-featured" class="ml-2 block text-sm text-gray-900">Mark as Featured</label>
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">Publish Announcement</button>
+                    </form>
+                 </div>
+             </div>
+        </section>
+
+        <!-- Admin Events Page -->
+        <section id="admin-events" class="page admin-page">
+             <div class="container mx-auto px-6 py-12">
+                 <h1 class="text-4xl font-bold text-gray-900 mb-10">Manage Events</h1>
+                 <div class="bg-white p-8 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-6">Create New Event</h2>
+                    <form id="create-event-form" class="space-y-4">
+                        <input type="text" id="event-title" placeholder="Event Title" class="w-full p-2 border rounded-md" required>
+                        <input type="date" id="event-date" class="w-full p-2 border rounded-md" required>
+                        <textarea id="event-description" placeholder="Event description, time, and location..." class="w-full p-2 border rounded-md" rows="4" required></textarea>
+                        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700">Add Event</button>
+                    </form>
+                 </div>
+            </div>
+        </section>
+
+        <!-- Admin Timetable Page -->
+        <section id="admin-timetable" class="page admin-page">
+            <div class="container mx-auto px-6 py-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-10">Update Timetable</h1>
+                <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+                    <h2 class="text-2xl font-bold mb-4">Editing: JSS 2 Weekly Timetable</h2>
+                     <table class="w-full text-left border-collapse min-w-[800px]">
+                        <thead><tr><th class="py-2 px-4 bg-gray-200 border">Time</th><th class="py-2 px-4 bg-gray-200 border">Monday</th><th class="py-2 px-4 bg-gray-200 border">Tuesday</th><th class="py-2 px-4 bg-gray-200 border">Wednesday</th><th class="py-2 px-4 bg-gray-200 border">Thursday</th><th class="py-2 px-4 bg-gray-200 border">Friday</th></tr></thead>
+                        <tbody><tr><td class="py-2 px-4 border">8:00 - 8:40</td>
+                            <td><input type="text" class="w-full p-1 border rounded" value="Mathematics"></td>
+                            <td><input type="text" class="w-full p-1 border rounded" value="English"></td>
+                            <td><input type="text" class="w-full p-1 border rounded" value="Mathematics"></td>
+                            <td><input type="text" class="w-full p-1 border rounded" value="English"></td>
+                            <td><input type="text" class="w-full p-1 border rounded" value="Agric Science"></td>
+                        </tr></tbody>
+                    </table>
+                    <div class="text-right mt-6"><button class="bg-yellow-500 text-white px-8 py-2 rounded-md hover:bg-yellow-600">Save Changes</button></div>
+                </div>
+            </div>
+        </section>
+
+         <!-- Admin Results Page -->
+        <section id="admin-results" class="page admin-page">
+             <div class="container mx-auto px-6 py-12">
+                 <h1 class="text-4xl font-bold text-gray-900 mb-10">Update Student Results</h1>
+                 <div class="bg-white p-8 rounded-lg shadow-md">
+                    <div class="mb-6"><input type="text" placeholder="Search for student by ID or Name..." class="w-full md:w-1/2 p-2 border rounded-md"></div>
+                    <h2 class="text-xl font-bold mb-2">Editing Results for: Adaeze Okoro (EN/2024/105)</h2>
+                    <table class="w-full text-left">
+                        <thead><tr class="bg-gray-200"><th class="p-2">Subject</th><th class="p-2">Test (40)</th><th class="p-2">Exam (60)</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-2 border-b">Mathematics</td>
+                                <td class="p-2 border-b"><input type="number" class="w-20 p-1 border rounded" value="35"></td>
+                                <td class="p-2 border-b"><input type="number" class="w-20 p-1 border rounded" value="50"></td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b">English</td>
+                                <td class="p-2 border-b"><input type="number" class="w-20 p-1 border rounded" value="30"></td>
+                                <td class="p-2 border-b"><input type="number" class="w-20 p-1 border rounded" value="48"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-right mt-6"><button class="bg-purple-500 text-white px-8 py-2 rounded-md hover:bg-purple-600">Save Results</button></div>
+                 </div>
+             </div>
+        </section>
+
+        <!-- Admin Profile Page -->
+        <section id="admin-profile" class="page admin-page">
+             <div class="container mx-auto px-6 py-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center">Administrator Profile</h1>
+                <div class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
+                    <form>
+                        <div class="space-y-4">
+                            <div><label class="font-medium">Full Name</label><input type="text" value="Admin User" class="w-full mt-1 p-2 border rounded-md"></div>
+                            <div><label class="font-medium">Email</label><input type="email" value="admin@enuguschools.gov" class="w-full mt-1 p-2 border rounded-md"></div>
+                            <div class="border-t pt-4"><button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400">Change Password</button></div>
+                            <div class="text-right"><button type="submit" class="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600">Save Changes</button></div>
+                        </div>
+                    </form>
+                </div>
+             </div>
+        </section>
+
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-6 py-8">
+            <div class="text-center mb-4">
+                <p>&copy; 2025 Enugu State School Board. All Rights Reserved.</p>
+            </div>
+            <div class="text-center text-sm">
+                <a href="#" data-page="admin-login" class="text-gray-400 hover:text-white">Admin Login</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- STATE MANAGEMENT ---
+        let loggedIn = false;
+        let adminLoggedIn = false;
+        
+        // --- ELEMENTS ---
+        const pages = document.querySelectorAll('.page');
+        const navLoggedIn = document.getElementById('nav-logged-in');
+        const navLoggedOut = document.getElementById('nav-logged-out');
+        const navAdmin = document.getElementById('nav-admin');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        
+        // Auth elements
+        const loginForm = document.getElementById('login-form');
+        const logoutButton = document.getElementById('logout-button');
+        const profileMenuButton = document.getElementById('profile-menu-button');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const adminLoginForm = document.getElementById('admin-login-form');
+        const adminLogoutButton = document.getElementById('admin-logout-button');
+        const adminProfileMenuButton = document.getElementById('admin-profile-menu-button');
+        const adminProfileDropdown = document.getElementById('admin-profile-dropdown');
+        
+        // Content creation forms
+        const createAnnouncementForm = document.getElementById('create-announcement-form');
+        const createEventForm = document.getElementById('create-event-form');
+        const publicAnnouncementsList = document.getElementById('public-announcements-list');
+        const publicEventsList = document.getElementById('public-events-list').querySelector('.space-y-6');
+
+
+        // --- PAGE ROUTING ---
+        function showPage(pageId) {
+            pages.forEach(page => page.classList.remove('active'));
+            const activePage = document.getElementById(pageId);
+            if (activePage) activePage.classList.add('active');
+            window.scrollTo(0, 0);
+            mobileMenu.classList.add('hidden');
+        }
+
+        // --- UI & STATE UPDATES ---
+        function updateUI() {
+            navLoggedOut.classList.add('hidden');
+            navLoggedIn.classList.add('hidden');
+            navAdmin.classList.add('hidden');
+            navLoggedOut.classList.remove('md:flex');
+            navLoggedIn.classList.remove('md:flex');
+            navAdmin.classList.remove('md:flex');
+
+            if (adminLoggedIn) {
+                navAdmin.classList.remove('hidden');
+                navAdmin.classList.add('md:flex');
+            } else if (loggedIn) {
+                navLoggedIn.classList.remove('hidden');
+                navLoggedIn.classList.add('md:flex');
+            } else {
+                navLoggedOut.classList.remove('hidden');
+                navLoggedOut.classList.add('md:flex');
+            }
+            updateMobileMenu();
+        }
+
+        function updateMobileMenu() {
+            mobileMenu.innerHTML = '';
+            let links = [];
+            if (adminLoggedIn) {
+                 links = [
+                    { page: 'admin-dashboard', text: 'Admin Dashboard' },
+                    { page: 'admin-announcements', text: 'Manage Announcements' },
+                    { page: 'admin-events', text: 'Manage Events' },
+                    { page: 'admin-profile', text: 'My Profile' },
+                    { page: 'logout-admin', text: 'Logout' }
+                ];
+            } else if (loggedIn) {
+                links = [
+                    { page: 'dashboard', text: 'Dashboard' }, { page: 'timetable', text: 'Timetable' },
+                    { page: 'results', text: 'Results' }, { page: 'profile', text: 'My Profile' },
+                    { page: 'logout', text: 'Logout' }
+                ];
+            } else {
+                 links = [
+                    { page: 'home', text: 'Home' }, { page: 'announcements', text: 'Announcements' },
+                    { page: 'events', text: 'Events' }, { page: 'login', text: 'Login / Register' }
+                ];
+            }
+
+            links.forEach(link => {
+                const a = document.createElement('a');
+                a.href = '#';
+                a.dataset.page = link.page;
+                a.textContent = link.text;
+                a.className = 'block py-3 px-6 text-gray-600 hover:bg-gray-100';
+                 if (link.page === 'logout') a.id = 'mobile-logout-button';
+                 if (link.page === 'logout-admin') a.id = 'mobile-admin-logout-button';
+                mobileMenu.appendChild(a);
+            });
+        }
+        
+        function handleLogout() {
+            loggedIn = false;
+            updateUI();
+            showPage('home');
+        }
+
+        function handleAdminLogout() {
+            adminLoggedIn = false;
+            updateUI();
+            showPage('home');
+        }
+
+        // --- EVENT LISTENERS ---
+        document.body.addEventListener('click', function(e) {
+            let target = e.target.closest('[data-page]');
+            if (target) {
+                e.preventDefault();
+                const pageId = target.dataset.page;
+                if (pageId === 'logout') handleLogout();
+                else if (pageId === 'logout-admin') handleAdminLogout();
+                else showPage(pageId);
+            }
+             if (e.target.id === 'mobile-logout-button') { e.preventDefault(); handleLogout(); }
+             if (e.target.id === 'mobile-admin-logout-button') { e.preventDefault(); handleAdminLogout(); }
+        });
+        
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        
+        // Student Login
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault(); loggedIn = true; updateUI(); showPage('dashboard');
+            });
+        }
+        if(logoutButton) logoutButton.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+        if(profileMenuButton) profileMenuButton.addEventListener('click', () => profileDropdown.classList.toggle('hidden'));
+
+        // Admin Login
+        if (adminLoginForm) {
+            adminLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault(); adminLoggedIn = true; updateUI(); showPage('admin-dashboard');
+            });
+        }
+        if(adminLogoutButton) adminLogoutButton.addEventListener('click', (e) => { e.preventDefault(); handleAdminLogout(); });
+        if(adminProfileMenuButton) adminProfileMenuButton.addEventListener('click', () => adminProfileDropdown.classList.toggle('hidden'));
+
+
+        // Close dropdowns
+        document.addEventListener('click', function(event) {
+            if (profileMenuButton && !profileMenuButton.contains(event.target) && profileDropdown && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+            if (adminProfileMenuButton && !adminProfileMenuButton.contains(event.target) && adminProfileDropdown && !adminProfileDropdown.contains(event.target)) {
+                adminProfileDropdown.classList.add('hidden');
+            }
+        });
+
+        // --- DYNAMIC CONTENT CREATION ---
+
+        // Create Announcement
+        if (createAnnouncementForm) {
+            createAnnouncementForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('announcement-title').value;
+                const content = document.getElementById('announcement-content').value;
+                const isFeatured = document.getElementById('announcement-featured').checked;
+                const date = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+                let newAnnouncementHTML = '';
+                if(isFeatured) {
+                    newAnnouncementHTML = `
+                    <div class="bg-green-100 border-l-4 border-green-500 p-6 rounded-r-lg shadow-lg">
+                        <p class="text-sm text-green-700 font-semibold">FEATURED - ${date}</p>
+                        <h2 class="text-2xl font-bold mt-1 text-green-900">${title}</h2>
+                        <p class="text-gray-700 mt-2">${content}</p>
+                    </div>`;
+                } else {
+                     newAnnouncementHTML = `
+                     <div class="bg-white p-6 rounded-lg shadow-md">
+                        <p class="text-sm text-gray-500">${date}</p>
+                        <h2 class="text-xl font-bold mt-1">${title}</h2>
+                        <p class="text-gray-600 mt-2">${content}</p>
+                    </div>`;
+                }
+                
+                publicAnnouncementsList.insertAdjacentHTML('afterbegin', newAnnouncementHTML);
+                alert('Announcement published successfully!');
+                this.reset();
+                showPage('announcements');
+            });
+        }
+
+        // Create Event
+        if (createEventForm) {
+            createEventForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('event-title').value;
+                const dateStr = document.getElementById('event-date').value;
+                const description = document.getElementById('event-description').value;
+
+                const date = new Date(dateStr + 'T00:00:00');
+                const day = date.getDate();
+                const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+
+                const newEventHTML = `
+                <div class="bg-white p-6 rounded-lg shadow flex items-start space-x-4">
+                    <div class="text-center border-r pr-4">
+                        <p class="text-3xl font-bold text-green-700">${day}</p>
+                        <p class="text-sm text-gray-500">${month}</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">${title}</h3>
+                        <p class="text-gray-600">${description}</p>
+                    </div>
+                </div>`;
+
+                publicEventsList.insertAdjacentHTML('beforeend', newEventHTML);
+                 alert('Event added successfully!');
+                this.reset();
+                showPage('events');
+            });
+        }
+
+
+        // --- CALENDAR LOGIC (No changes needed) ---
+        // ...
+        
+        // --- INITIALIZATION ---
+        updateUI();
+        showPage('home');
+        // renderCalendar(); // Assuming this is defined elsewhere if needed
+    });
+    </script>
+</body>
+</html>
+
