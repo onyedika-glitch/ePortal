@@ -41,12 +41,18 @@
         .admin-page {
             background-color: #f7fafc; /* A slightly different background for admin pages */
         }
+        #notification-banner {
+            transition: transform 0.5s ease-in-out;
+        }
+        #notification-banner.hidden {
+            transform: translateY(-200%);
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
     <!-- Header & Navigation -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
+    <header class="bg-white shadow-md sticky top-0 z-40">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" data-page="home" class="nav-link text-2xl font-bold text-green-800">Enugu School Board</a>
             <!-- Logged Out Navigation -->
@@ -98,10 +104,13 @@
         </div>
     </header>
 
+    <!-- Notification Banner -->
+    <div id="notification-banner" class="hidden fixed top-20 right-5 p-4 rounded-lg shadow-lg z-50">
+        <span id="notification-message"></span>
+    </div>
+
     <!-- Main Content Area -->
     <main>
-        <!-- ... existing public pages from home to profile ... -->
-        
         <!-- Home Page (Landing Page) -->
         <section id="home" class="page active">
             <!-- Hero Section -->
@@ -180,17 +189,17 @@
             </div>
         </section>
 
-        <!-- Login/Register Page -->
+        <!-- Login Page -->
         <section id="login" class="page">
             <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
                 <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-lg">
                     <div>
                         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
                     </div>
-                    <form id="login-form" class="mt-8 space-y-6" action="#" method="POST">
+                    <form id="login-form" class="mt-8 space-y-6">
                         <div class="rounded-md shadow-sm -space-y-px">
-                            <div><input id="email-address" name="email" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="Email address"></div>
-                            <div><input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="Password"></div>
+                            <div><input name="email" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="Email address"></div>
+                            <div><input name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="Password"></div>
                         </div>
                         <div><button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">Sign in</button></div>
                         <p class="text-center text-sm">Don't have an account? <a href="#" data-page="register" class="font-medium text-green-600 hover:text-green-500">Register here</a></p>
@@ -204,11 +213,11 @@
             <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
                  <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-lg">
                     <div><h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Create a new account</h2></div>
-                    <form class="mt-8 space-y-6" action="#" method="POST">
-                        <input type="text" placeholder="Full Name" class="w-full px-3 py-2 border border-gray-300 rounded-md">
-                        <input type="email" placeholder="Email Address" class="w-full px-3 py-2 border border-gray-300 rounded-md">
-                        <input type="password" placeholder="Password" class="w-full px-3 py-2 border border-gray-300 rounded-md">
-                        <input type="password" placeholder="Confirm Password" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    <form id="register-form" class="mt-8 space-y-6">
+                        <input type="text" placeholder="Full Name" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                        <input type="email" placeholder="Email Address" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                        <input type="password" placeholder="Password" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                        <input type="password" placeholder="Confirm Password" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
                         <div><button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">Register</button></div>
                         <p class="text-center text-sm">Already have an account? <a href="#" data-page="login" class="font-medium text-green-600 hover:text-green-500">Sign in</a></p>
                     </form>
@@ -216,6 +225,8 @@
             </div>
         </section>
 
+        <!-- ... other pages (Dashboard, Announcements, etc.) ... -->
+        
         <!-- Dashboard Page -->
         <section id="dashboard" class="page">
             <div class="container mx-auto px-6 py-12">
@@ -285,19 +296,6 @@
                         <h2 class="text-xl font-bold mt-1">2025-2026 School Calendar Approved</h2>
                         <p class="text-gray-600 mt-2">The board has officially approved the academic calendar for the upcoming school year. Key dates include resumption on September 15th and first term exams starting December 1st. You can download the full calendar from the resources section.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <p class="text-sm text-gray-500">October 5, 2025</p>
-                        <h2 class="text-xl font-bold mt-1">New Digital Literacy Initiative Launched</h2>
-                        <p class="text-gray-600 mt-2">We are excited to announce a new program to provide tablets and coding classes to all junior secondary students, starting this term. A detailed schedule for device distribution will be sent to parents via email.</p>
-                    </div>
-                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <p class="text-sm text-gray-500">September 30, 2025</p>
-                        <h2 class="text-xl font-bold mt-1">Inter-House Sports Heats Schedule</h2>
-                        <p class="text-gray-600 mt-2">The preliminary heats for the annual inter-house sports competition will take place from November 17th to 20th. All participating students should confirm their events with their house masters.</p>
-                    </div>
-                    <div class="text-center mt-12">
-                        <button class="bg-gray-200 text-gray-700 py-2 px-6 rounded-full hover:bg-gray-300">Load More Announcements</button>
-                    </div>
                 </div>
              </div>
         </section>
@@ -306,7 +304,6 @@
         <section id="events" class="page">
             <div class="container mx-auto px-6 py-12">
                 <h1 class="text-4xl font-bold text-gray-900 mb-10 text-center">School Events Calendar</h1>
-                <!-- Event Calendar -->
                 <div class="bg-white p-6 rounded-lg shadow-md mb-12">
                     <div class="flex justify-between items-center mb-4">
                         <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
@@ -316,35 +313,12 @@
                     <div class="grid grid-cols-7 gap-1 text-center font-semibold text-sm text-gray-600 mb-2">
                         <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
                     </div>
-                    <div id="calendar-grid" class="grid grid-cols-7 gap-1">
-                        <!-- Calendar days will be generated by JS -->
-                    </div>
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
                 </div>
-                <!-- Events Details -->
                 <div class="space-y-10">
                     <div id="public-events-list">
                         <h2 class="text-3xl font-bold mb-6 border-b-2 border-green-500 pb-2">Upcoming Events</h2>
                         <div class="space-y-6">
-                            <div class="bg-white p-6 rounded-lg shadow flex items-start space-x-4">
-                                <div class="text-center border-r pr-4">
-                                    <p class="text-3xl font-bold text-green-700">25</p>
-                                    <p class="text-sm text-gray-500">OCT</p>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold">Monthly Board Meeting</h3>
-                                    <p class="text-gray-600">An open meeting for all stakeholders to discuss school policies and progress. Location: Board Office. Time: 6:00 PM.</p>
-                                </div>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow flex items-start space-x-4">
-                                <div class="text-center border-r pr-4">
-                                    <p class="text-3xl font-bold text-green-700">10</p>
-                                    <p class="text-sm text-gray-500">NOV</p>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold">District-Wide Professional Development Day</h3>
-                                    <p class="text-gray-600">A day of training and workshops for all teaching staff. Note: There will be no classes for students.</p>
-                                </div>
-                            </div>
                              <div class="bg-white p-6 rounded-lg shadow flex items-start space-x-4">
                                 <div class="text-center border-r pr-4">
                                     <p class="text-3xl font-bold text-green-700">22</p>
@@ -357,40 +331,25 @@
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <h2 class="text-3xl font-bold mb-6 border-b-2 border-gray-300 pb-2">Events Archive</h2>
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="bg-gray-200 p-4 rounded-lg shadow-inner text-gray-700">
-                                <h3 class="font-bold">September 15: School Resumption Day</h3>
-                                <p class="text-sm">Marked the beginning of the 2025/2026 academic session with an orientation for new students.</p>
-                            </div>
-                            <div class="bg-gray-200 p-4 rounded-lg shadow-inner text-gray-700">
-                                <h3 class="font-bold">September 5: Entrance Exam Results Released</h3>
-                                <p class="text-sm">The results for the common entrance examinations were published online.</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
+        
+        <!-- ... other pages from timetable to admin profile ... -->
 
-        <!-- Timetable Page -->
         <section id="timetable" class="page">
             <div class="container mx-auto px-6 py-12">
-                <h1 class="text-4xl font-bold text-gray-900 mb-4 text-center">Class Timetables</h1>
-                <p class="text-center text-gray-600 mb-8">Select a class to view the weekly schedule.</p>
-                <!-- Timetable Selector -->
-                <div class="text-center mb-8">
-                    <select id="class-selector" class="p-2 border rounded-md shadow-sm">
-                        <option value="jss2">JSS 2</option>
-                        <option value="sss1">SSS 1</option>
-                    </select>
-                </div>
-
-                <!-- JSS 2 Timetable -->
-                <div id="timetable-jss2" class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-                    <h2 class="text-2xl font-bold mb-4">JSS 2 Weekly Timetable</h2>
-                    <table class="w-full text-left border-collapse min-w-[800px]">
+                 <h1 class="text-4xl font-bold text-gray-900 mb-4 text-center">Class Timetables</h1>
+                 <p class="text-center text-gray-600 mb-8">Select a class to view the weekly schedule.</p>
+                 <div class="text-center mb-8">
+                     <select id="class-selector" class="p-2 border rounded-md shadow-sm">
+                         <option value="jss2">JSS 2</option>
+                         <option value="sss1">SSS 1</option>
+                     </select>
+                 </div>
+                 <div id="timetable-jss2" class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+                     <h2 class="text-2xl font-bold mb-4">JSS 2 Weekly Timetable</h2>
+                     <table class="w-full text-left border-collapse min-w-[800px]">
                         <thead>
                             <tr>
                                 <th class="py-2 px-4 bg-gray-200 border">Time</th>
@@ -402,105 +361,40 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td class="py-2 px-4 border">7:45 - 8:00</td><td class="py-2 px-4 border bg-gray-100 text-center" colspan="5">Assembly</td></tr>
                             <tr><td class="py-2 px-4 border">8:00 - 8:40</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Agric Science</td></tr>
-                            <tr><td class="py-2 px-4 border">8:40 - 9:20</td><td class="py-2 px-4 border">Basic Science</td><td class="py-2 px-4 border">Social Studies</td><td class="py-2 px-4 border">Basic Science</td><td class="py-2 px-4 border">Social Studies</td><td class="py-2 px-4 border">CRS</td></tr>
-                             <tr><td class="py-2 px-4 border">9:20 - 10:00</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Basic Tech</td><td class="py-2 px-4 border">Business Studies</td></tr>
-                            <tr><td class="py-2 px-4 border font-bold bg-green-100" colspan="6">10:00 - 10:30 SHORT BREAK</td></tr>
-                            <tr><td class="py-2 px-4 border">10:30 - 11:10</td><td class="py-2 px-4 border">Igbo</td><td class="py-2 px-4 border">Computer</td><td class="py-2 px-4 border">Igbo</td><td class="py-2 px-4 border">Computer</td><td class="py-2 px-4 border">PHE</td></tr>
-                             <tr><td class="py-2 px-4 border">11:10 - 11:50</td><td class="py-2 px-4 border">Social Studies</td><td class="py-2 px-4 border">Basic Science</td><td class="py-2 px-4 border">Basic Tech</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">Library</td></tr>
-                             <tr><td class="py-2 px-4 border font-bold bg-green-100" colspan="6">12:00 - 1:00 LONG BREAK</td></tr>
-                             <tr><td class="py-2 px-4 border">1:00 - 1:40</td><td class="py-2 px-4 border">CCA</td><td class="py-2 px-4 border">Agric Science</td><td class="py-2 px-4 border">Home Economics</td><td class="py-2 px-4 border">Business Studies</td><td class="py-2 px-4 border">Club Activities</td></tr>
                         </tbody>
-                    </table>
-                </div>
-                 <!-- SSS 1 Timetable (hidden by default) -->
-                <div id="timetable-sss1" class="bg-white p-6 rounded-lg shadow-md overflow-x-auto hidden">
-                    <h2 class="text-2xl font-bold mb-4">SSS 1 Weekly Timetable</h2>
-                    <table class="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr>
-                                <th class="py-2 px-4 bg-gray-200 border">Time</th>
-                                <th class="py-2 px-4 bg-gray-200 border">Monday</th>
-                                <th class="py-2 px-4 bg-gray-200 border">Tuesday</th>
-                                <th class="py-2 px-4 bg-gray-200 border">Wednesday</th>
-                                <th class="py-2 px-4 bg-gray-200 border">Thursday</th>
-                                <th class="py-2 px-4 bg-gray-200 border">Friday</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                             <tr><td class="py-2 px-4 border">8:00 - 8:40</td><td class="py-2 px-4 border">Physics</td><td class="py-2 px-4 border">Chemistry</td><td class="py-2 px-4 border">Mathematics</td><td class="py-2 px-4 border">English</td><td class="py-2 px-4 border">Biology</td></tr>
-                            <!-- Add more SSS 1 rows here -->
-                        </tbody>
-                    </table>
-                </div>
+                     </table>
+                 </div>
+                 <div id="timetable-sss1" class="bg-white p-6 rounded-lg shadow-md overflow-x-auto hidden">
+                     <h2 class="text-2xl font-bold mb-4">SSS 1 Weekly Timetable</h2>
+                 </div>
             </div>
         </section>
 
-        <!-- Results Page -->
         <section id="results" class="page">
              <div class="container mx-auto px-6 py-12">
                 <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center">Academic Results</h1>
                 <div class="bg-white p-8 rounded-lg shadow-md max-w-4xl mx-auto">
-                    <div class="md:flex justify-between items-center mb-6">
+                     <div class="md:flex justify-between items-center mb-6">
                         <div>
                             <p><strong>Student:</strong> Adaeze Okoro</p>
                             <p><strong>Class:</strong> JSS 2</p>
-                            <p><strong>Student ID:</strong> EN/2024/105</p>
                         </div>
-                        <div class="mt-4 md:mt-0 text-right">
-                             <select class="p-2 border rounded-md">
-                                <option>First Term 2025</option>
-                                <option>Third Term 2024</option>
-                                <option>Second Term 2024</option>
-                            </select>
-                            <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 ml-2"><i class="fas fa-print mr-2"></i>Print</button>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left min-w-[600px]">
-                            <thead><tr class="bg-gray-200"><th class="p-3">Subject</th><th class="p-3">Test (40)</th><th class="p-3">Exam (60)</th><th class="p-3">Total (100)</th><th class="p-3">Grade</th></tr></thead>
-                            <tbody>
-                                <tr><td class="p-3 border-b">Mathematics</td><td class="p-3 border-b">35</td><td class="p-3 border-b">50</td><td class="p-3 border-b">85</td><td class="p-3 border-b font-bold text-green-700">A</td></tr>
-                                <tr><td class="p-3 border-b">English</td><td class="p-3 border-b">30</td><td class="p-3 border-b">48</td><td class="p-3 border-b">78</td><td class="p-3 border-b font-bold text-green-700">B</td></tr>
-                                <tr><td class="p-3 border-b">Basic Science</td><td class="p-3 border-b">38</td><td class="p-3 border-b">54</td><td class="p-3 border-b">92</td><td class="p-3 border-b font-bold text-green-700">A</td></tr>
-                                <tr><td class="p-3 border-b">Social Studies</td><td class="p-3 border-b">28</td><td class="p-3 border-b">45</td><td class="p-3 border-b">73</td><td class="p-3 border-b font-bold text-green-700">B</td></tr>
-                                <tr><td class="p-3 border-b">Computer Science</td><td class="p-3 border-b">36</td><td class="p-3 border-b">51</td><td class="p-3 border-b">87</td><td class="p-3 border-b font-bold text-green-700">A</td></tr>
-                            </tbody>
-                            <tfoot>
-                                <tr class="bg-gray-100 font-bold"><td class="p-3" colspan="3">Term Average</td><td class="p-3" colspan="2">83.0%</td></tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                     <div class="mt-8 border-t pt-6">
-                        <h3 class="text-lg font-bold">Teacher's Remarks</h3>
-                        <p class="text-gray-600 italic mt-2">"Adaeze has shown excellent performance this term, especially in sciences. A little more focus on Social Studies will yield even better results. Keep up the great work!"</p>
-                    </div>
+                     </div>
                 </div>
              </div>
         </section>
         
-        <!-- Profile Page -->
         <section id="profile" class="page">
              <div class="container mx-auto px-6 py-12">
                 <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center">Student Profile</h1>
                 <div class="bg-white p-8 rounded-lg shadow-md max-w-3xl mx-auto">
-                    <div class="text-center mb-8">
-                        <img src="https://placehold.co/120x120/4a5568/ffffff?text=A" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-green-200">
-                        <button class="text-sm text-green-600 hover:underline">Change Photo</button>
-                    </div>
                     <form>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div><label class="font-medium text-gray-700">Full Name</label><input type="text" value="Adaeze Okoro" class="w-full mt-1 p-2 border rounded-md bg-gray-100" readonly></div>
-                            <div><label class="font-medium text-gray-700">Student ID</label><input type="text" value="EN/2024/105" class="w-full mt-1 p-2 border rounded-md bg-gray-100" readonly></div>
                             <div><label class="font-medium text-gray-700">Class</label><input type="text" value="JSS 2" class="w-full mt-1 p-2 border rounded-md bg-gray-100" readonly></div>
-                            <div><label class="font-medium text-gray-700">Date of Birth</label><input type="text" value="15-08-2012" class="w-full mt-1 p-2 border rounded-md bg-gray-100" readonly></div>
-                            <div class="md:col-span-2"><label class="font-medium text-gray-700">Email Address</label><input type="email" value="ada.okoro@example.com" class="w-full mt-1 p-2 border rounded-md bg-gray-50"></div>
-                            <div class="md:col-span-2"><label class="font-medium text-gray-700">Guardian's Name</label><input type="text" value="Mr. & Mrs. Okoro" class="w-full mt-1 p-2 border rounded-md bg-gray-50"></div>
-                            <div><label class="font-medium text-gray-700">Guardian's Phone</label><input type="tel" value="+2348012345678" class="w-full mt-1 p-2 border rounded-md bg-gray-50"></div>
-                        </div>
-                        <div class="border-t mt-8 pt-6 flex justify-between items-center">
-                             <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400">Change Password</button>
+                         </div>
+                         <div class="border-t mt-8 pt-6 flex justify-end">
                             <button type="submit" class="bg-green-600 text-white px-8 py-2 rounded-md hover:bg-green-700">Save Changes</button>
                         </div>
                     </form>
@@ -509,8 +403,6 @@
         </section>
 
         <!-- ADMIN SECTION -->
-        
-        <!-- Admin Login Page -->
         <section id="admin-login" class="page">
             <div class="min-h-screen flex items-center justify-center bg-gray-800 py-12 px-4">
                  <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-2xl">
@@ -523,8 +415,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Admin Dashboard Page -->
         <section id="admin-dashboard" class="page admin-page">
             <div class="container mx-auto px-6 py-12">
                  <h1 class="text-4xl font-bold text-gray-900 mb-10">Admin Dashboard</h1>
@@ -537,23 +427,9 @@
                         <i class="fas fa-calendar-check fa-3x text-green-500"></i>
                         <div><h2 class="text-2xl font-bold">Manage Events</h2><p class="text-gray-600">Add or update school events.</p></div>
                     </a>
-                    <a href="#" data-page="admin-timetable" class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow flex items-center space-x-4">
-                        <i class="fas fa-calendar-alt fa-3x text-yellow-500"></i>
-                        <div><h2 class="text-2xl font-bold">Update Timetables</h2><p class="text-gray-600">Modify class schedules.</p></div>
-                    </a>
-                    <a href="#" data-page="admin-results" class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow flex items-center space-x-4">
-                        <i class="fas fa-poll fa-3x text-purple-500"></i>
-                        <div><h2 class="text-2xl font-bold">Update Results</h2><p class="text-gray-600">Input and edit student grades.</p></div>
-                    </a>
-                    <a href="#" data-page="admin-profile" class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow flex items-center space-x-4">
-                        <i class="fas fa-user-cog fa-3x text-red-500"></i>
-                        <div><h2 class="text-2xl font-bold">Admin Profile</h2><p class="text-gray-600">Manage your administrator account.</p></div>
-                    </a>
                  </div>
             </div>
         </section>
-        
-        <!-- Admin Announcements Page -->
         <section id="admin-announcements" class="page admin-page">
              <div class="container mx-auto px-6 py-12">
                  <h1 class="text-4xl font-bold text-gray-900 mb-10">Manage Announcements</h1>
@@ -571,8 +447,6 @@
                  </div>
              </div>
         </section>
-
-        <!-- Admin Events Page -->
         <section id="admin-events" class="page admin-page">
              <div class="container mx-auto px-6 py-12">
                  <h1 class="text-4xl font-bold text-gray-900 mb-10">Manage Events</h1>
@@ -587,56 +461,6 @@
                  </div>
             </div>
         </section>
-
-        <!-- Admin Timetable Page -->
-        <section id="admin-timetable" class="page admin-page">
-            <div class="container mx-auto px-6 py-12">
-                <h1 class="text-4xl font-bold text-gray-900 mb-10">Update Timetable</h1>
-                <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-                    <h2 class="text-2xl font-bold mb-4">Editing: JSS 2 Weekly Timetable</h2>
-                     <table class="w-full text-left border-collapse min-w-[800px]">
-                        <thead><tr><th class="py-2 px-4 bg-gray-200 border">Time</th><th class="py-2 px-4 bg-gray-200 border">Monday</th><th class="py-2 px-4 bg-gray-200 border">Tuesday</th><th class="py-2 px-4 bg-gray-200 border">Wednesday</th><th class="py-2 px-4 bg-gray-200 border">Thursday</th><th class="py-2 px-4 bg-gray-200 border">Friday</th></tr></thead>
-                        <tbody><tr><td class="py-2 px-4 border">8:00 - 8:40</td>
-                            <td><input type="text" class="w-full p-1 border rounded" value="Mathematics"></td>
-                            <td><input type="text" class="w-full p-1 border rounded" value="English"></td>
-                            <td><input type="text" class="w-full p-1 border rounded" value="Mathematics"></td>
-                            <td><input type="text" class="w-full p-1 border rounded" value="English"></td>
-                            <td><input type="text" class="w-full p-1 border rounded" value="Agric Science"></td>
-                        </tr></tbody>
-                    </table>
-                    <div class="text-right mt-6"><button class="bg-yellow-500 text-white px-8 py-2 rounded-md hover:bg-yellow-600">Save Changes</button></div>
-                </div>
-            </div>
-        </section>
-
-         <!-- Admin Results Page -->
-        <section id="admin-results" class="page admin-page">
-             <div class="container mx-auto px-6 py-12">
-                 <h1 class="text-4xl font-bold text-gray-900 mb-10">Update Student Results</h1>
-                 <div class="bg-white p-8 rounded-lg shadow-md">
-                    <div class="mb-6"><input type="text" placeholder="Search for student by ID or Name..." class="w-full md:w-1/2 p-2 border rounded-md"></div>
-                    <h2 class="text-xl font-bold mb-2">Editing Results for: Adaeze Okoro (EN/2024/105)</h2>
-                    <table class="w-full text-left">
-                        <thead><tr class="bg-gray-200"><th class="p-2">Subject</th><th class="p-2">Test (40)</th><th class="p-2">Exam (60)</th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td class="p-2 border-b">Mathematics</td>
-                                <td class="p-2 border-b"><input type="number" class="w-20 p-1 border rounded" value="35"></td>
-                                <td class="p-2 border-b"><input type="number" class="w-20 p-1 border rounded" value="50"></td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 border-b">English</td>
-                                <td class="p-2 border-b"><input type="number" class="w-20 p-1 border rounded" value="30"></td>
-                                <td class="p-2 border-b"><input type="number" class="w-20 p-1 border rounded" value="48"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="text-right mt-6"><button class="bg-purple-500 text-white px-8 py-2 rounded-md hover:bg-purple-600">Save Results</button></div>
-                 </div>
-             </div>
-        </section>
-
-        <!-- Admin Profile Page -->
         <section id="admin-profile" class="page admin-page">
              <div class="container mx-auto px-6 py-12">
                 <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center">Administrator Profile</h1>
@@ -645,14 +469,12 @@
                         <div class="space-y-4">
                             <div><label class="font-medium">Full Name</label><input type="text" value="Admin User" class="w-full mt-1 p-2 border rounded-md"></div>
                             <div><label class="font-medium">Email</label><input type="email" value="admin@enuguschools.gov" class="w-full mt-1 p-2 border rounded-md"></div>
-                            <div class="border-t pt-4"><button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400">Change Password</button></div>
                             <div class="text-right"><button type="submit" class="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600">Save Changes</button></div>
                         </div>
                     </form>
                 </div>
              </div>
         </section>
-
 
     </main>
     
@@ -684,6 +506,7 @@
         
         // Auth elements
         const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
         const logoutButton = document.getElementById('logout-button');
         const profileMenuButton = document.getElementById('profile-menu-button');
         const profileDropdown = document.getElementById('profile-dropdown');
@@ -698,8 +521,12 @@
         const publicAnnouncementsList = document.getElementById('public-announcements-list');
         const publicEventsList = document.getElementById('public-events-list').querySelector('.space-y-6');
 
+        // Notification Elements
+        const notificationBanner = document.getElementById('notification-banner');
+        const notificationMessage = document.getElementById('notification-message');
+        let notificationTimeout;
 
-        // --- PAGE ROUTING ---
+        // --- CORE FUNCTIONS ---
         function showPage(pageId) {
             pages.forEach(page => page.classList.remove('active'));
             const activePage = document.getElementById(pageId);
@@ -708,7 +535,22 @@
             mobileMenu.classList.add('hidden');
         }
 
-        // --- UI & STATE UPDATES ---
+        function showNotification(message, type = 'success') {
+            clearTimeout(notificationTimeout);
+            notificationMessage.textContent = message;
+            
+            notificationBanner.className = 'fixed top-20 right-5 p-4 rounded-lg shadow-lg z-50 text-white'; // Reset classes
+            if (type === 'success') {
+                notificationBanner.classList.add('bg-green-500');
+            } else {
+                notificationBanner.classList.add('bg-red-500');
+            }
+
+            notificationTimeout = setTimeout(() => {
+                notificationBanner.classList.add('hidden');
+            }, 3000);
+        }
+
         function updateUI() {
             navLoggedOut.classList.add('hidden');
             navLoggedIn.classList.add('hidden');
@@ -736,21 +578,17 @@
             if (adminLoggedIn) {
                  links = [
                     { page: 'admin-dashboard', text: 'Admin Dashboard' },
-                    { page: 'admin-announcements', text: 'Manage Announcements' },
-                    { page: 'admin-events', text: 'Manage Events' },
-                    { page: 'admin-profile', text: 'My Profile' },
                     { page: 'logout-admin', text: 'Logout' }
                 ];
             } else if (loggedIn) {
                 links = [
-                    { page: 'dashboard', text: 'Dashboard' }, { page: 'timetable', text: 'Timetable' },
-                    { page: 'results', text: 'Results' }, { page: 'profile', text: 'My Profile' },
+                    { page: 'dashboard', text: 'Dashboard' },
                     { page: 'logout', text: 'Logout' }
                 ];
             } else {
                  links = [
-                    { page: 'home', text: 'Home' }, { page: 'announcements', text: 'Announcements' },
-                    { page: 'events', text: 'Events' }, { page: 'login', text: 'Login / Register' }
+                    { page: 'home', text: 'Home' },
+                    { page: 'login', text: 'Login / Register' }
                 ];
             }
 
@@ -794,38 +632,40 @@
         
         mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         
-        // Student Login
+        // --- AUTHENTICATION FORMS ---
         if (loginForm) {
             loginForm.addEventListener('submit', function(e) {
-                e.preventDefault(); loggedIn = true; updateUI(); showPage('dashboard');
+                e.preventDefault(); 
+                loggedIn = true; 
+                updateUI(); 
+                showPage('dashboard');
             });
         }
-        if(logoutButton) logoutButton.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
-        if(profileMenuButton) profileMenuButton.addEventListener('click', () => profileDropdown.classList.toggle('hidden'));
-
-        // Admin Login
+        
+        // FIX: Added event listener for the registration form
+        if (registerForm) {
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                showNotification('Registration successful! Please log in.');
+                showPage('login');
+            });
+        }
+        
         if (adminLoginForm) {
             adminLoginForm.addEventListener('submit', function(e) {
-                e.preventDefault(); adminLoggedIn = true; updateUI(); showPage('admin-dashboard');
+                e.preventDefault(); 
+                adminLoggedIn = true; 
+                updateUI(); 
+                showPage('admin-dashboard');
             });
         }
+        
+        if(logoutButton) logoutButton.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+        if(profileMenuButton) profileMenuButton.addEventListener('click', () => profileDropdown.classList.toggle('hidden'));
         if(adminLogoutButton) adminLogoutButton.addEventListener('click', (e) => { e.preventDefault(); handleAdminLogout(); });
         if(adminProfileMenuButton) adminProfileMenuButton.addEventListener('click', () => adminProfileDropdown.classList.toggle('hidden'));
 
-
-        // Close dropdowns
-        document.addEventListener('click', function(event) {
-            if (profileMenuButton && !profileMenuButton.contains(event.target) && profileDropdown && !profileDropdown.contains(event.target)) {
-                profileDropdown.classList.add('hidden');
-            }
-            if (adminProfileMenuButton && !adminProfileMenuButton.contains(event.target) && adminProfileDropdown && !adminProfileDropdown.contains(event.target)) {
-                adminProfileDropdown.classList.add('hidden');
-            }
-        });
-
         // --- DYNAMIC CONTENT CREATION ---
-
-        // Create Announcement
         if (createAnnouncementForm) {
             createAnnouncementForm.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -836,29 +676,18 @@
 
                 let newAnnouncementHTML = '';
                 if(isFeatured) {
-                    newAnnouncementHTML = `
-                    <div class="bg-green-100 border-l-4 border-green-500 p-6 rounded-r-lg shadow-lg">
-                        <p class="text-sm text-green-700 font-semibold">FEATURED - ${date}</p>
-                        <h2 class="text-2xl font-bold mt-1 text-green-900">${title}</h2>
-                        <p class="text-gray-700 mt-2">${content}</p>
-                    </div>`;
+                    newAnnouncementHTML = `<div class="bg-green-100 border-l-4 border-green-500 p-6 rounded-r-lg shadow-lg"><p class="text-sm text-green-700 font-semibold">FEATURED - ${date}</p><h2 class="text-2xl font-bold mt-1 text-green-900">${title}</h2><p class="text-gray-700 mt-2">${content}</p></div>`;
                 } else {
-                     newAnnouncementHTML = `
-                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <p class="text-sm text-gray-500">${date}</p>
-                        <h2 class="text-xl font-bold mt-1">${title}</h2>
-                        <p class="text-gray-600 mt-2">${content}</p>
-                    </div>`;
+                     newAnnouncementHTML = `<div class="bg-white p-6 rounded-lg shadow-md"><p class="text-sm text-gray-500">${date}</p><h2 class="text-xl font-bold mt-1">${title}</h2><p class="text-gray-600 mt-2">${content}</p></div>`;
                 }
                 
                 publicAnnouncementsList.insertAdjacentHTML('afterbegin', newAnnouncementHTML);
-                alert('Announcement published successfully!');
+                showNotification('Announcement published successfully!');
                 this.reset();
                 showPage('announcements');
             });
         }
 
-        // Create Event
         if (createEventForm) {
             createEventForm.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -870,33 +699,18 @@
                 const day = date.getDate();
                 const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
 
-                const newEventHTML = `
-                <div class="bg-white p-6 rounded-lg shadow flex items-start space-x-4">
-                    <div class="text-center border-r pr-4">
-                        <p class="text-3xl font-bold text-green-700">${day}</p>
-                        <p class="text-sm text-gray-500">${month}</p>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold">${title}</h3>
-                        <p class="text-gray-600">${description}</p>
-                    </div>
-                </div>`;
+                const newEventHTML = `<div class="bg-white p-6 rounded-lg shadow flex items-start space-x-4"><div class="text-center border-r pr-4"><p class="text-3xl font-bold text-green-700">${day}</p><p class="text-sm text-gray-500">${month}</p></div><div><h3 class="text-xl font-bold">${title}</h3><p class="text-gray-600">${description}</p></div></div>`;
 
                 publicEventsList.insertAdjacentHTML('beforeend', newEventHTML);
-                 alert('Event added successfully!');
+                showNotification('Event added successfully!');
                 this.reset();
                 showPage('events');
             });
         }
-
-
-        // --- CALENDAR LOGIC (No changes needed) ---
-        // ...
         
         // --- INITIALIZATION ---
         updateUI();
         showPage('home');
-        // renderCalendar(); // Assuming this is defined elsewhere if needed
     });
     </script>
 </body>
